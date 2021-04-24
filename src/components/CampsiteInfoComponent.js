@@ -1,6 +1,121 @@
 import React, { Component } from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Button, Label, 
+    Modal, ModalHeader, ModalBody} from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Control, LocalForm, Errors } from 'react-redux-form';
+
+const required = val => val && val.length;
+const maxLength = len => val => !val || (val.length <= len);
+const minLength = len => val => val && (val.length >= len);
+const isNumber = val => !isNaN(+val);
+
+class CommentForm extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {};
+
+        this.toggleModal = this.toggleModal.bind(this);
+    }
+
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen
+        });
+    } 
+
+    handleSubmit(values) {
+        console.log('Current state is: ' + JSON.stringify(values));
+        alert('Current state is: ' + JSON.stringify(values));
+    }
+
+    render() {
+        return (
+            <>
+            <div className="form-group">
+                <Button outline onClick={this.toggleModal}>
+                    <i className="fa fa-pencil fa-lg" aria-hidden="true" /> Submit Comment
+                </Button>
+            </div>
+            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+                <ModalBody>
+                    <LocalForm onSubmit={values => this.handleSubmit(values)}>
+                        <div className="form-group">
+                            <Label htmlFor="rating">Rating</Label>
+                            <Control.select model=".rating" name="rating"
+                                    className="form-control"
+                                    validators={{
+                                        required,
+                                        isNumber
+                                    }}>
+                                <option value="">Rate It</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </Control.select>
+                            <Errors
+                                className="text-danger"
+                                model=".rating"
+                                show="touched"
+                                component="div"
+                                messages={{
+                                    required: 'Required: You have to select a rating.',
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <Label htmlFor="author">Your Name</Label>
+                            <Control.text model=".author" id="author" name="author"
+                                placeholder="Your Name"
+                                className="form-control"
+                                validators={{
+                                    required,
+                                    minLength: minLength(2),
+                                    maxLength: maxLength(15),
+                                }} />
+                                <Errors
+                                    className="text-danger"
+                                    model=".author"
+                                    show="touched"
+                                    component="div"
+                                    messages={{
+                                        minLength: 'Required: Must be at least 2 letters.',
+                                        maxLength: 'Required: Must be 15 letters or less.',
+                                    }}
+                                />
+                        </div>
+                        <div className="form-group">
+                            <Label htmlFor="text">Comment</Label>
+                            <Control.textarea model=".text" id="text" name="text"
+                                rows="6"
+                                className="form-control"
+                                validators={{
+                                    required,
+                                }} />            
+                            <Errors
+                                className="text-danger"
+                                model=".text"
+                                show="touched"
+                                component="div"
+                                messages={{
+                                    required: 'Required: A comment is required.',
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">        
+                            <Button type="submit" value="submit" color="primary">Submit</Button>
+                        </div>
+                    </LocalForm>
+                </ModalBody>
+            </Modal>
+            </>
+        );
+    }
+}
 
 class CampsiteInfo extends Component {
     constructor(props) {
@@ -31,9 +146,10 @@ class CampsiteInfo extends Component {
                     {comments.map(comment => 
                         <div key={comment.id}>
                             <p>{comment.text} <br />
-                            {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                            -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
                         </div>
                     )}
+                     <CommentForm />
                 </div>
             );
         }
