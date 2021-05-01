@@ -4,6 +4,25 @@ import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Button, 
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
+import { baseURL } from '../shared/baseURL';
+
+const required = val => val && val.length;
+const maxLength = len => val => !val || (val.length <= len);
+const minLength = len => val => val && (val.length >= len);
+const isNumber = val => !isNaN(+val);
+
+function RenderCampsite({campsite}) {
+    return (
+        <div className="col-md-5 m-1">
+            <Card>
+                <CardImg top src={baseURL + campsite.image} alt={campsite.name} />
+                <CardBody>
+                    <CardText>{campsite.description}</CardText>
+                </CardBody>
+            </Card>
+        </div>
+    );
+}
 
 function CampsiteInfo(props) {
     if (props.isLoading) {
@@ -56,19 +75,6 @@ function CampsiteInfo(props) {
     }
 }
 
-function RenderCampsite({campsite}) {
-    return (
-        <div className="col-md-5 m-1">
-            <Card>
-                <CardImg top src={campsite.image} alt={campsite.name} />
-                <CardBody>
-                    <CardText>{campsite.description}</CardText>
-                </CardBody>
-            </Card>
-        </div>
-    );
-}
-
 function RenderComments({comments, addComment, campsiteId}) {
     if(comments) {
         return(
@@ -88,11 +94,6 @@ function RenderComments({comments, addComment, campsiteId}) {
         <div></div>
     );
 }
-
-const required = val => val && val.length;
-const maxLength = len => val => !val || (val.length <= len);
-const minLength = len => val => val && (val.length >= len);
-const isNumber = val => !isNaN(+val);
 
 class CommentForm extends Component {
 
