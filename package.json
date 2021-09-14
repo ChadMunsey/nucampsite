@@ -8,7 +8,6 @@
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "4.5.2",
     "bootstrap-social": "5.1.1",
-    "express": "^4.17.1",
     "font-awesome": "4.7.0",
     "prop-types": "15.7.2",
     "react": "^17.0.2",
@@ -29,7 +28,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
